@@ -67,7 +67,7 @@ public class LenderController {
 	public ResponseEntity<Object> createLender(@RequestBody LenderDTO lenderDTO, HttpServletRequest request) {
 
 		Lender lender = modelMapper.map(lenderDTO, Lender.class);
-		logger.info("LenderDTO=" + lenderDTO + " Lender=" + lender);
+		log(lender, lenderDTO);
 		
 		String lenderId = lenderService.createLender(lender);
 
@@ -85,10 +85,11 @@ public class LenderController {
 	public LenderDTO getLender(@PathVariable(value= "lenderId") String lenderId) {
 		final Lender lender = lenderService.getLenderById(lenderId);
 		final LenderDTO lenderDTO =  modelMapper.map(lender, LenderDTO.class);
-		logger.info("LenderDTO=" + lenderDTO + " Lender=" + lender);
+		log(lender, lenderDTO);
 		return lenderDTO;
 		
 	}
+
 	
 	/**
 	 * Get All Lenders
@@ -113,7 +114,7 @@ public class LenderController {
 	public ResponseEntity<Object> updateLender(@PathVariable(value= "lenderId") String lenderId, @RequestBody LenderDTO lenderDTO) {
 		Lender lender = lenderService.getLenderById(lenderId);
 		modelMapper.map(lenderDTO, lender);
-		logger.info("Lender=" + lender);
+		logger.info("Lender={}", lender);
 		lenderService.updateLender(lender);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
@@ -121,7 +122,7 @@ public class LenderController {
 	
 	@RequestMapping(path="/{lenderId}", method = RequestMethod.PATCH)
 	public ResponseEntity<Object> updateLenderStatus(@PathVariable(value= "lenderId") String lenderId, @RequestBody LenderDTO lenderDTO) {
-		logger.info("LenderDTO=" + lenderDTO);
+		logger.info("LenderDTO={}", lenderDTO);
 		lenderService.updateLenderStatus(lenderId, lenderDTO.getStatus());
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
@@ -136,6 +137,10 @@ public class LenderController {
 	public ResponseEntity<Object> deleteLender(@PathVariable(value= "lenderId") String lenderId) {
 		lenderService.deleteLenderById(lenderId);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+	
+	private void log(final Lender lender, final LenderDTO lenderDTO) {
+		logger.info("LenderDTO={} Lender={}", lenderDTO, lender);
 	}
 
 }

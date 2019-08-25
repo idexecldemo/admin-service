@@ -1,44 +1,27 @@
 package com.idexcel.adminservice.controller;
 
-import static org.mockito.BDDMockito.any;
-import static org.junit.Assert.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.idexcel.adminservice.AdminServiceApplication;
-import com.idexcel.adminservice.AdminServiceConfig;
 import com.idexcel.adminservice.dto.LenderDTO;
 import com.idexcel.adminservice.entity.Lender;
 import com.idexcel.adminservice.exceptions.LenderAlreadyExistsException;
+import com.idexcel.adminservice.exceptions.LenderNotFoundException;
 import com.idexcel.adminservice.service.LenderService;
 
 @RunWith(SpringRunner.class)
@@ -60,7 +43,7 @@ public class LenderControllerTest {
 		when(modelMapper.map(any(), any())).thenReturn(new Lender());
 		when(lenderService.createLender(any(Lender.class))).thenReturn("DummyLenderId");
 		mockMvc.perform( MockMvcRequestBuilders
-				.post("/lenders")
+				.post("/idexceldemo/lenders")
 				.content(convertObjectToJson(getLender()))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -74,7 +57,7 @@ public class LenderControllerTest {
 		when(modelMapper.map(any(), any())).thenReturn(new Lender());
 		when(lenderService.createLender(any(Lender.class))).thenThrow(LenderAlreadyExistsException.class);
 		mockMvc.perform( MockMvcRequestBuilders
-				.post("/lenders")
+				.post("/idexceldemo/lenders")
 				.content(convertObjectToJson(getLender()))
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -82,9 +65,17 @@ public class LenderControllerTest {
 	}
 	
 	@Test
-	public void test() throws Exception {
+	public void getLenderById() throws Exception {
+		when(lenderService.getLenderById(any())).thenReturn(new Lender());
 		mockMvc.perform( MockMvcRequestBuilders
-				.get("/lenders/test")).andExpect(status().isOk());
+				.get("/idexceldemo/lenders/lenderId1")).andExpect(status().isOk());
+	}
+	
+	@Test
+	public void getLenderByInvalidId() throws Exception {
+		when(lenderService.getLenderById(any())).thenThrow(LenderNotFoundException.class);
+		mockMvc.perform( MockMvcRequestBuilders
+				.get("/idexceldemo/lenders/lenderId1")).andExpect(status().isBadRequest());
 	}
 	
 	private static String convertObjectToJson(final Object obj) {

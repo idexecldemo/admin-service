@@ -12,6 +12,7 @@ import com.idexcel.adminservice.dao.LenderServiceRepository;
 import com.idexcel.adminservice.entity.Lender;
 import com.idexcel.adminservice.enums.LenderStatus;
 import com.idexcel.adminservice.exceptions.LenderAlreadyExistsException;
+import com.idexcel.adminservice.exceptions.LenderNotFoundException;
 import com.idexcel.adminservice.service.LenderService;
 
 @Service
@@ -24,10 +25,10 @@ public class LenderServiceImpl implements LenderService {
 	
 	@Override
 	public String createLender(Lender lender) {
-		logger.info("Creating Lender:" + lender);
+		logger.info("Creating Lender: {}", lender);
 		
 		List<Lender> existingLender = lenderServiceRepository.findByName(lender.getName());
-		if (existingLender != null && existingLender.size() > 0) {
+		if (existingLender != null && !existingLender.isEmpty()) {
 			throw new LenderAlreadyExistsException("Lender with name '" + lender.getName() + "' already exists");
 		}
 		lender.setStatus(LenderStatus.PENDING);
@@ -38,7 +39,11 @@ public class LenderServiceImpl implements LenderService {
 
 	@Override
 	public Lender getLenderById(String lenderId) {
-		return lenderServiceRepository.findByLenderId(lenderId);
+		Lender lender = lenderServiceRepository.findByLenderId(lenderId);
+		if(lender == null) {
+			throw new LenderNotFoundException("Lender " + lenderId + " Not Found");
+		}
+		return lender;
 	}
 
 	@Override
