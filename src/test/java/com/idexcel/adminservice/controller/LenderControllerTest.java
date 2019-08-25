@@ -18,6 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.idexcel.adminservice.dto.AddressDTO;
 import com.idexcel.adminservice.dto.LenderDTO;
 import com.idexcel.adminservice.entity.Lender;
 import com.idexcel.adminservice.exceptions.LenderAlreadyExistsException;
@@ -88,6 +89,12 @@ public class LenderControllerTest {
 	private static LenderDTO getLender() {
 		LenderDTO lenderDto = new LenderDTO();
 		lenderDto.setName("JUnit Lender");
+		AddressDTO address = new AddressDTO();
+		address.setStreet("459 Herndon Parkway");
+		address.setCity("Herndon");
+		address.setState("VA");
+		address.setZip(20171);
+		lenderDto.setAddress(address);
 		return lenderDto;
 	}
 }

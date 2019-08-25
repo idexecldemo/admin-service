@@ -1,0 +1,154 @@
+{
+	"variables": [],
+	"info": {
+		"name": "admin-service",
+		"_postman_id": "db188a2c-d808-14ee-c7ca-db6f6b452b85",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Create Lender",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 201\"] = responseCode.code === 201;",
+							"tests[\"Response has no payload\"] = responseBody.length === 0;",
+							"tests[\"Location header is present\"] = postman.getResponseHeader(\"Location\");",
+							"postman.setGlobalVariable(\"lenderLocation\", postman.getResponseHeader(\"Location\"));"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{host}}/idexceldemo/lenders",
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"name\": \"Comerica Bank {{$guid}}\",\n\t\"address\": {\n\t\t\"street\": \"459 Herndon Parkway\",\n\t\t\"city\": \"Herndon\",\n\t\t\"state\": \"VA\",\n\t\t\"zip\": \"20171\"\n\t}\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Lenders",
+			"request": {
+				"url": "{{host}}/idexceldemo/lenders",
+				"method": "GET",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Get Lender By Id",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"tests[\"Status code is 200\"] = responseCode.code === 200;",
+							"tests[\"Response has a payload\"] = responseBody.length > 0;",
+							"if (responseBody) {",
+							"    var jsonData = JSON.parse(responseBody);",
+							"    tests[\"Response body has id\"] = jsonData.id;",
+							"    tests[\"Response body has lender name\"] = jsonData.name;",
+							"    postman.setGlobalVariable(\"id\", jsonData.id);",
+							"    postman.setGlobalVariable(\"lenderName\", jsonData.name);",
+							"}"
+						]
+					}
+				}
+			],
+			"request": {
+				"url": "{{lenderLocation}}",
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Update Lender",
+			"request": {
+				"url": "{{lenderLocation}}",
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{id}}\",\n    \"name\": \"{{lenderName}}\",\n    \"status\": \"PENDING\",\n    \"address\": {\n        \"street\": \"459 Herndon Parkway2233\",\n        \"city\": \"Herndon\",\n        \"state\": \"VA\",\n        \"zip\": 20171\n    },\n    \"createdDate\": null,\n    \"createdBy\": null,\n    \"updatedDate\": null,\n    \"updatedBy\": null\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Update Lender Status (Patch)",
+			"request": {
+				"url": "{{lenderLocation}}",
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"description": ""
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"{{id}}\",\n    \"status\": \"ACTIVE\"\n}"
+				},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "GetLenderInfo",
+			"request": {
+				"url": "{{lenderLocation}}",
+				"method": "HEAD",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Lender",
+			"request": {
+				"url": "{{lenderLocation}}",
+				"method": "DELETE",
+				"header": [],
+				"body": {},
+				"description": ""
+			},
+			"response": []
+		}
+	]
+}
