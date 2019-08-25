@@ -1,5 +1,7 @@
 package com.idexcel.adminservice.controller;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpServletRequest;
 
 import org.modelmapper.ModelMapper;
@@ -10,17 +12,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.idexcel.adminservice.dto.LenderDto;
+import com.idexcel.adminservice.dto.LenderDTO;
 import com.idexcel.adminservice.entity.Lender;
 import com.idexcel.adminservice.service.LenderService;
 
 @RestController
-@RequestMapping("/lenders")
+@RequestMapping("idexceldemo/lenders")
 public class LenderController {
 	
 	@Autowired
@@ -32,10 +35,10 @@ public class LenderController {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
 	@PostMapping()
-	public ResponseEntity createLender(@RequestBody LenderDto lenderDto, HttpServletRequest request) {
+	public ResponseEntity<Object> createLender(@RequestBody LenderDTO lenderDTO, HttpServletRequest request) {
 
-		Lender lender = modelMapper.map(lenderDto, Lender.class);
-		logger.info("LenderDto=" + lenderDto + " Lender=" + lender);
+		Lender lender = modelMapper.map(lenderDTO, Lender.class);
+		logger.info("LenderDto=" + lenderDTO + " Lender=" + lender);
 		
 		String lenderId = lenderService.createLender(lender);
 
@@ -44,9 +47,15 @@ public class LenderController {
 		return new ResponseEntity<>(responseHeaders, HttpStatus.CREATED);
 	}
 	
-	@GetMapping("/test")
-	public String test() {
-		return "hello";
+	@GetMapping("/{lenderId}")
+	public LenderDTO getLender(@PathVariable(value= "lenderId") String lenderId) {
+		Optional<Lender> lender = lenderService.getLender(lenderId);
+		logger.info("Lender=" + lender);
+		LenderDTO lenderDTO =  modelMapper.map(lender, LenderDTO.class);
+		logger.info("LenderDTO=" + lenderDTO);
+		
+		return lenderDTO;
+		
 	}
 
 }

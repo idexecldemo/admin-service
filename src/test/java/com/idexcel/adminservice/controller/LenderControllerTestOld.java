@@ -31,7 +31,7 @@ import org.springframework.web.context.WebApplicationContext;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.idexcel.adminservice.AdminServiceApplication;
 import com.idexcel.adminservice.AdminServiceConfig;
-import com.idexcel.adminservice.dto.LenderDto;
+import com.idexcel.adminservice.dto.LenderDTO;
 import com.idexcel.adminservice.entity.Lender;
 import com.idexcel.adminservice.service.LenderService;
 
@@ -78,8 +78,8 @@ public class LenderControllerTestOld {
 			throw new RuntimeException(e);
 		}
 	}
-	private static LenderDto getLender() {
-		LenderDto lenderDto = new LenderDto();
+	private static LenderDTO getLender() {
+		LenderDTO lenderDto = new LenderDTO();
 		lenderDto.setName("JUnit Lender");
 		return lenderDto;
 	}

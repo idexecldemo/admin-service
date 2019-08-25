@@ -1,32 +1,20 @@
-package com.idexcel.adminservice.entity;
+package com.idexcel.adminservice.dto;
 
 import java.util.Date;
-
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-@Document (collection = "lender")
 @Getter @Setter @ToString
-public class Lender {
-
-	@Id
+public class LenderDTO {
 	private String id;
-	
 	private String name;
-	
 	private String status;
-	
+	private AddressDTO address;
 	private Date createdDate;
-	
 	private String createdBy;
-	
 	private Date updatedDate;
-	
 	private String updatedBy;
 	
-	private Address address;
 }
