@@ -1,5 +1,6 @@
 package com.idexcel.adminservice.service.impl;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -29,7 +30,8 @@ public class LenderServiceImpl implements LenderService {
 		if (existingLender != null && existingLender.size() > 0) {
 			throw new LenderAlreadyExistsException("Lender with name '" + lender.getName() + "' already exists");
 		}
-		
+		lender.setStatus(LenderStatus.PENDING);
+		lender.setCreatedDate(Calendar.getInstance().getTime());
 		Lender lenderCreated = lenderServiceRepository.save(lender);
 		return lenderCreated.getId();
 	}
@@ -46,6 +48,7 @@ public class LenderServiceImpl implements LenderService {
 
 	@Override
 	public void updateLender(Lender lender) {
+		lender.setUpdatedDate(Calendar.getInstance().getTime());
 		lenderServiceRepository.save(lender);
 	}
 
@@ -58,6 +61,7 @@ public class LenderServiceImpl implements LenderService {
 	public void updateLenderStatus(String lenderId, LenderStatus status) {
 		Lender lender = lenderServiceRepository.findByLenderId(lenderId);
 		lender.setStatus(status);
+		lender.setUpdatedDate(Calendar.getInstance().getTime());
 		lenderServiceRepository.save(lender);
 	}
 

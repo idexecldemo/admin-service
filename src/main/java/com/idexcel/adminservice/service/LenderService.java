@@ -1,7 +1,6 @@
 package com.idexcel.adminservice.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import com.idexcel.adminservice.entity.Lender;
 import com.idexcel.adminservice.enums.LenderStatus;

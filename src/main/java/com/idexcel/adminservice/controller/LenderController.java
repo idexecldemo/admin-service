@@ -6,6 +6,7 @@ import java.lang.reflect.Type;
 import javax.servlet.http.HttpServletRequest;
 
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,20 +27,35 @@ import com.google.common.reflect.TypeToken;
 import com.idexcel.adminservice.dto.LenderDTO;
 import com.idexcel.adminservice.dto.LenderListDTO;
 import com.idexcel.adminservice.entity.Lender;
-import com.idexcel.adminservice.enums.LenderStatus;
 import com.idexcel.adminservice.service.LenderService;
 
 @RestController
 @RequestMapping("idexceldemo/lenders")
 public class LenderController {
 	
-	@Autowired
+	
 	private ModelMapper modelMapper;
 	
 	@Autowired
 	private LenderService lenderService;
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
+	
+	PropertyMap<LenderDTO, Lender> propertiesToSkipMap = new PropertyMap<LenderDTO, Lender>() {
+		@Override
+		protected void configure() {
+			skip().setCreatedDate(null);
+			skip().setUpdatedDate(null);
+			skip().setCreatedBy(null);
+			skip().setUpdatedBy(null);
+		}
+	};
+	
+	@Autowired
+	public LenderController(ModelMapper modelMapper) {
+		this.modelMapper = modelMapper;
+		this.modelMapper.addMappings(propertiesToSkipMap);
+	}
 	
 	/**
 	 * Create new Lender
@@ -51,7 +67,6 @@ public class LenderController {
 	public ResponseEntity<Object> createLender(@RequestBody LenderDTO lenderDTO, HttpServletRequest request) {
 
 		Lender lender = modelMapper.map(lenderDTO, Lender.class);
-		lender.setStatus(LenderStatus.PENDING);
 		logger.info("LenderDTO=" + lenderDTO + " Lender=" + lender);
 		
 		String lenderId = lenderService.createLender(lender);
@@ -82,7 +97,8 @@ public class LenderController {
 	@GetMapping()
 	public List<LenderListDTO> getAllLenders() {
 		final List<Lender> lenders = lenderService.getAllLenders();
-	    Type targetListType = new TypeToken<List<LenderListDTO>>() {}.getType();
+	    Type targetListType = new TypeToken<List<LenderListDTO>>() {
+			private static final long serialVersionUID = 1L;}.getType();
 	    return modelMapper.map(lenders, targetListType);
 
 	}
@@ -95,7 +111,8 @@ public class LenderController {
 	 */
 	@PutMapping("/{lenderId}")
 	public ResponseEntity<Object> updateLender(@PathVariable(value= "lenderId") String lenderId, @RequestBody LenderDTO lenderDTO) {
-		Lender lender = modelMapper.map(lenderDTO, Lender.class);
+		Lender lender = lenderService.getLenderById(lenderId);
+		modelMapper.map(lenderDTO, lender);
 		logger.info("Lender=" + lender);
 		lenderService.updateLender(lender);
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
