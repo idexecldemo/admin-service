@@ -1,7 +1,6 @@
 package com.idexcel.adminservice.service.impl;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +34,8 @@ public class LenderServiceImpl implements LenderService {
 	}
 
 	@Override
-	public Optional<Lender> getLender(String lenderId) {
-		return lenderServiceRepository.findById(lenderId);
+	public Lender getLenderById(String lenderId) {
+		return lenderServiceRepository.findByLenderId(lenderId);
 	}
 
 }

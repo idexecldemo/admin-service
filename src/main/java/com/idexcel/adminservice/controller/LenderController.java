@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.idexcel.adminservice.dto.LenderDTO;
 import com.idexcel.adminservice.entity.Lender;
+import com.idexcel.adminservice.enums.LenderStatus;
 import com.idexcel.adminservice.service.LenderService;
 
 @RestController
@@ -38,6 +39,7 @@ public class LenderController {
 	public ResponseEntity<Object> createLender(@RequestBody LenderDTO lenderDTO, HttpServletRequest request) {
 
 		Lender lender = modelMapper.map(lenderDTO, Lender.class);
+		lender.setStatus(LenderStatus.PENDING);
 		logger.info("LenderDto=" + lenderDTO + " Lender=" + lender);
 		
 		String lenderId = lenderService.createLender(lender);
@@ -49,7 +51,7 @@ public class LenderController {
 	
 	@GetMapping("/{lenderId}")
 	public LenderDTO getLender(@PathVariable(value= "lenderId") String lenderId) {
-		Optional<Lender> lender = lenderService.getLender(lenderId);
+		Lender lender = lenderService.getLenderById(lenderId);
 		logger.info("Lender=" + lender);
 		LenderDTO lenderDTO =  modelMapper.map(lender, LenderDTO.class);
 		logger.info("LenderDTO=" + lenderDTO);

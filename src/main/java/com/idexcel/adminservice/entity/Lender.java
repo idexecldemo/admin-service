@@ -5,6 +5,8 @@ import java.util.Date;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import com.idexcel.adminservice.enums.LenderStatus;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -18,7 +20,7 @@ public class Lender {
 	
 	private String name;
 	
-	private String status;
+	private LenderStatus status;
 	
 	private Date createdDate;
 	

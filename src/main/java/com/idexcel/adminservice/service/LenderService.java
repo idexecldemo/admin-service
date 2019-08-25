@@ -8,5 +8,5 @@ public interface  LenderService {
 
 	public String createLender(Lender lender); 
 	
-	public Optional<Lender> getLender(String lenderId);
+	public Lender getLenderById(String lenderId);
 }

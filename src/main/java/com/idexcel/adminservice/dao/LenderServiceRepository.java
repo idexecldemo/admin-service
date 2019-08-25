@@ -12,5 +12,8 @@ public interface LenderServiceRepository extends MongoRepository<Lender, String>
 	
 	@Query("{name : ?0}")
 	public List<Lender> findByName(String lenderName);
+	
+	@Query("{id : ?0}")
+	public Lender findByLenderId(String lenderId);
 
 }
