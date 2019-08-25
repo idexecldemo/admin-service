@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import com.idexcel.adminservice.dao.LenderServiceRepository;
 import com.idexcel.adminservice.entity.Lender;
+import com.idexcel.adminservice.enums.LenderStatus;
 import com.idexcel.adminservice.exceptions.LenderAlreadyExistsException;
 import com.idexcel.adminservice.service.LenderService;
 
@@ -36,6 +37,28 @@ public class LenderServiceImpl implements LenderService {
 	@Override
 	public Lender getLenderById(String lenderId) {
 		return lenderServiceRepository.findByLenderId(lenderId);
+	}
+
+	@Override
+	public List<Lender> getAllLenders() {
+		return lenderServiceRepository.findAll();
+	}
+
+	@Override
+	public void updateLender(Lender lender) {
+		lenderServiceRepository.save(lender);
+	}
+
+	@Override
+	public void deleteLenderById(String lenderId) {
+		lenderServiceRepository.deleteById(lenderId);
+	}
+
+	@Override
+	public void updateLenderStatus(String lenderId, LenderStatus status) {
+		Lender lender = lenderServiceRepository.findByLenderId(lenderId);
+		lender.setStatus(status);
+		lenderServiceRepository.save(lender);
 	}
 
 }

@@ -1,6 +1,7 @@
 package com.idexcel.adminservice.controller;
 
-import java.util.Optional;
+import java.util.List;
+import java.lang.reflect.Type;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -11,14 +12,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.google.common.reflect.TypeToken;
 import com.idexcel.adminservice.dto.LenderDTO;
+import com.idexcel.adminservice.dto.LenderListDTO;
 import com.idexcel.adminservice.entity.Lender;
 import com.idexcel.adminservice.enums.LenderStatus;
 import com.idexcel.adminservice.service.LenderService;
@@ -35,29 +41,84 @@ public class LenderController {
 	
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	
+	/**
+	 * Create new Lender
+	 * @param lenderDTO
+	 * @param request
+	 * @return
+	 */
 	@PostMapping()
 	public ResponseEntity<Object> createLender(@RequestBody LenderDTO lenderDTO, HttpServletRequest request) {
 
 		Lender lender = modelMapper.map(lenderDTO, Lender.class);
 		lender.setStatus(LenderStatus.PENDING);
-		logger.info("LenderDto=" + lenderDTO + " Lender=" + lender);
+		logger.info("LenderDTO=" + lenderDTO + " Lender=" + lender);
 		
 		String lenderId = lenderService.createLender(lender);
 
 		HttpHeaders responseHeaders = new HttpHeaders();
-		responseHeaders.add("Location", request.getRequestURL().toString() + lenderId);		
+		responseHeaders.add("Location", request.getRequestURL().toString() + "/" + lenderId);		
 		return new ResponseEntity<>(responseHeaders, HttpStatus.CREATED);
 	}
 	
+	/**
+	 * Get Lender By LenderId
+	 * @param lenderId
+	 * @return
+	 */
 	@GetMapping("/{lenderId}")
 	public LenderDTO getLender(@PathVariable(value= "lenderId") String lenderId) {
-		Lender lender = lenderService.getLenderById(lenderId);
-		logger.info("Lender=" + lender);
-		LenderDTO lenderDTO =  modelMapper.map(lender, LenderDTO.class);
-		logger.info("LenderDTO=" + lenderDTO);
-		
+		final Lender lender = lenderService.getLenderById(lenderId);
+		final LenderDTO lenderDTO =  modelMapper.map(lender, LenderDTO.class);
+		logger.info("LenderDTO=" + lenderDTO + " Lender=" + lender);
 		return lenderDTO;
 		
+	}
+	
+	/**
+	 * Get All Lenders
+	 * @return
+	 */
+	@GetMapping()
+	public List<LenderListDTO> getAllLenders() {
+		final List<Lender> lenders = lenderService.getAllLenders();
+	    Type targetListType = new TypeToken<List<LenderListDTO>>() {}.getType();
+	    return modelMapper.map(lenders, targetListType);
+
+	}
+	
+	/**
+	 * Update Lender
+	 * @param lenderId
+	 * @param lenderDTO
+	 * @return
+	 */
+	@PutMapping("/{lenderId}")
+	public ResponseEntity<Object> updateLender(@PathVariable(value= "lenderId") String lenderId, @RequestBody LenderDTO lenderDTO) {
+		Lender lender = modelMapper.map(lenderDTO, Lender.class);
+		logger.info("Lender=" + lender);
+		lenderService.updateLender(lender);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+	
+	
+	@RequestMapping(path="/{lenderId}", method = RequestMethod.PATCH)
+	public ResponseEntity<Object> updateLenderStatus(@PathVariable(value= "lenderId") String lenderId, @RequestBody LenderDTO lenderDTO) {
+		logger.info("LenderDTO=" + lenderDTO);
+		lenderService.updateLenderStatus(lenderId, lenderDTO.getStatus());
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+	}
+	
+	@RequestMapping(path="/{lenderId}", method = RequestMethod.HEAD)
+	public ResponseEntity<Object> getLenderInfo(@PathVariable(value= "lenderId") String lenderId) {
+		lenderService.getLenderById(lenderId);
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@DeleteMapping("/{lenderId}")
+	public ResponseEntity<Object> deleteLender(@PathVariable(value= "lenderId") String lenderId) {
+		lenderService.deleteLenderById(lenderId);
+		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 
 }
