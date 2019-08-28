@@ -29,7 +29,7 @@ node {
 	        
 	    stage('Push Docker Image to Docker Hub') { 
 			sh 'docker login -u idexceldemo -p demoidexcel' 
-	        sh 'docker push idexceldemo/aarp-account-service' 
+	        sh 'docker push idexceldemo/admin-service' 
 	    }
 	    
 	    stage('Deploy in AWS ECS'){
