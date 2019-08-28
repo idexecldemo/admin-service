@@ -28,8 +28,10 @@ node {
 	    }
 	        
 	    stage('Push Docker Image to Docker Hub') { 
-			sh 'docker login -u idexceldemo -p demoidexcel' 
-	        sh 'docker push idexceldemo/admin-service' 
+	    		withCredentials([usernamePassword(credentialsId: 'idexcedemo_dockerhub', passwordVariable: 'pass', usernameVariable: 'user')]) {
+	    			sh 'docker login -u $user -p $pass' 
+	        		sh 'docker push idexceldemo/admin-service'
+			}	 
 	    }
 	    
 	    stage('Deploy in AWS ECS'){
