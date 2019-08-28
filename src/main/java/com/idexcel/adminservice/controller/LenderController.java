@@ -139,6 +139,11 @@ public class LenderController {
 		return new ResponseEntity<>(HttpStatus.NO_CONTENT);
 	}
 	
+	@GetMapping("/healthCheck")
+	public String getHealth() {
+		return "admin service is running...";
+	}
+	
 	private void log(final Lender lender, final LenderDTO lenderDTO) {
 		logger.info("LenderDTO={} Lender={}", lenderDTO, lender);
 	}
