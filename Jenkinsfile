@@ -28,7 +28,7 @@ node {
 	    }
 	        
 	    stage('Push Docker Image to Docker Hub') { 
-	    		withCredentials([usernamePassword(credentialsId: 'idexcedemo_dockerhub', passwordVariable: 'pass', usernameVariable: 'user')]) {
+	    		withCredentials([usernamePassword(credentialsId: 'idexceldemo_dockerhub', passwordVariable: 'pass', usernameVariable: 'user')]) {
 	    			sh 'docker login -u $user -p $pass' 
 	        		sh 'docker push idexceldemo/admin-service'
 			}	 
