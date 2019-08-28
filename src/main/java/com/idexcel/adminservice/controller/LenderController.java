@@ -141,7 +141,7 @@ public class LenderController {
 	
 	@GetMapping("/healthCheck")
 	public String getHealth() {
-		return "admin service is running...";
+		return "admin service is running.";
 	}
 	
 	private void log(final Lender lender, final LenderDTO lenderDTO) {
