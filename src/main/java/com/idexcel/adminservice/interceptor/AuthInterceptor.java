@@ -7,11 +7,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
-@Component
-public class AuthenticationInterceptor implements HandlerInterceptor {
+public class AuthInterceptor implements HandlerInterceptor {
 	private final Logger logger = LoggerFactory.getLogger(this.getClass());
 	@Override
 	public boolean preHandle(HttpServletRequest request,
