@@ -1,2 +1,2 @@
 # admin-service
-How to run
+How to run admin-service
