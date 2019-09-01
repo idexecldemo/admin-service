@@ -16,7 +16,8 @@ public class InterceptorConfig extends WebMvcConfigurerAdapter{
         return new AuthInterceptor();
     }
 
+	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
-		registry.addInterceptor(authenticationInterceptor());
+		registry.addInterceptor(authenticationInterceptor()).excludePathPatterns("/idexceldemo/lenders/healthCheck");
 	}
 }

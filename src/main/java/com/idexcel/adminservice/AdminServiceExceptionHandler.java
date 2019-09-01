@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import com.idexcel.adminservice.dto.ErrorResponseDTO;
+import com.idexcel.adminservice.exceptions.AuthenticationException;
 import com.idexcel.adminservice.exceptions.LenderAlreadyExistsException;
 import com.idexcel.adminservice.exceptions.LenderNotFoundException;
 
@@ -17,8 +18,14 @@ public class AdminServiceExceptionHandler extends ResponseEntityExceptionHandler
 	protected ResponseEntity<Object> handleConflict(Exception e) {
 		return new ResponseEntity<>(new ErrorResponseDTO(e.getMessage()), HttpStatus.CONFLICT);
 	}
+	
 	@ExceptionHandler(value = {LenderNotFoundException.class})
 	protected ResponseEntity<Object> handleNotFound(Exception e) {
 		return new ResponseEntity<>(new ErrorResponseDTO(e.getMessage()), HttpStatus.BAD_REQUEST);
+	}
+	
+	@ExceptionHandler(value = {AuthenticationException.class})
+	protected ResponseEntity<Object> handleAuthenticationException(Exception e) {
+		return new ResponseEntity<>(new ErrorResponseDTO(e.getMessage()), HttpStatus.UNAUTHORIZED);
 	}
 }
